@@ -1,0 +1,17 @@
+{% extends "layout.jinja2.html" %}
+{% block title %}{{user.email}}{% endblock %}
+{% block main %}
+{% include 'modules/header.jinja2.html' %}
+
+<p>Hello {{user.username}}!</p>
+<div>
+    Your todos:
+    <ul> 
+    {% for person in users %}
+    <li>{{person.id}}, {{person.username}}, {{person.email}}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% include 'modules/footer.jinja2.html' %}
+{% endblock %}
