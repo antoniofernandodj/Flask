@@ -2,6 +2,7 @@ from . import app
 from .models import User
 from flask import render_template
 from os import getpid
+from flask_login import login_user
 
 class ClientView:
     def __init__(self, username):
