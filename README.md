@@ -1,4 +1,6 @@
-# Flask-MVC
+# Flask
+
+![flask logo](https://user-images.githubusercontent.com/96031071/205536309-da9bfefb-deac-4510-bc88-9c605a5a2ddc.png)
 
 This is a experiment to run flask with an architecture near to Django, where we find 3 majoy layers, so to speak.
 
