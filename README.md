@@ -1,7 +1,7 @@
 # Flask
 
 
-![flask logo](https://user-images.githubusercontent.com/96031071/205536309-da9bfefb-deac-4510-bc88-9c605a5a2ddc.png)
+![flask logo](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Flask_logo.svg/1200px-Flask_logo.svg.png)
 
 
 This is a experiment to run flask with an architecture near to Django, where we find 3 majoy layers, so to speak.
