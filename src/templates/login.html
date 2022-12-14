@@ -9,14 +9,22 @@
     </head>
     <body>
         <span>pid: {{ pid }}</span>
-        <form method="GET">
+        <form method="post">
             <div>
-                <label>email</label>
-                <input type="text" name="email" />
+                <label>nome</label>
+                <input type="text" name="nome" />
             </div>
             <div>
-                <label>password</label>
-                <input type="password" name="password" />
+                <label>idade</label>
+                <input type="number" name="idade" />
+            </div>
+            <div>
+                <label>ativo</label>
+                <input type="radio" name="ativo" value="1"/>
+            </div>
+            <div>
+                <label>nao ativo</label>
+                <input type="radio" name="ativo" value="0"/>
             </div>
             <div>
                 <input type="submit" value="enviar">

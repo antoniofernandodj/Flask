@@ -1,22 +1,16 @@
-from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from flask import Flask
 
-login_manager = LoginManager()
-db = SQLAlchemy()
-DB_NAME = "db.sqlite3"
-app = Flask(__name__)
-login_manager.init_app(app)
+from src.ext import config
+from src.ext import database
+from src.ext import auth
+from src import views
 
-app.config['SECRET_KEY'] = 'derfgtyhjuik'
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+def create_app() -> Flask:
+    app = Flask(__name__)
 
-db.init_app(app)
-
-from .models import User
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
-
-
+    auth.init_app(app)
+    config.init_app(app)
+    database.init_app(app)
+    views.init_app(app)
+    
+    return app

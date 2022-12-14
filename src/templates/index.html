@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}user{% endblock %}
+{% block main %}
+{% include 'modules/header.html' %}
+
+<div>
+    Your todos:
+    <ul> 
+    {% for person in users %}
+    <li>{{person.id}}, {{person.username}}, {{person.email}}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% include 'modules/footer.html' %}
+{% endblock %}
