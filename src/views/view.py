@@ -18,6 +18,7 @@ class LoginView(View):
         self.pid = getpid()
         
     def dispatch_request(self):
+        breakpoint()
         
         if request.method == 'POST':
             user_schema = schemas.User(
