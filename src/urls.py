@@ -1,4 +1,4 @@
-from src.libs.routing import path
+from src.libraries.routing import path
 from src.views import view
 
 

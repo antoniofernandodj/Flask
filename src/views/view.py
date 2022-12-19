@@ -5,7 +5,7 @@ from flask.views import View
 from src import schemas
 from src import models
 from src.models import db
-from src.libs import tasks
+from src.libraries import tasks
 from crontab import CronTab
 from pathlib import Path
 from flask import typing as ft
