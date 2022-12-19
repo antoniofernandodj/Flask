@@ -1,3 +1,27 @@
 <header style="border: 1px solid black;">
-    este é um header
+    <div class="mx-5 my-2">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+
+                <a class="navbar-brand" href="#">
+                    PyCrontabAdmin
+                </a>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    
+                <ul class="me-auto"></ul>
+                
+                <div class="d-flex mx-5">
+                    <a href="{{ url_for('logout') }}">
+                        <button class="btn btn-warning">
+                            Logout
+                        </button>
+                    </a>
+                </div>
+
+                </div>
+
+            </div>
+        </nav>
+    </div>
 </header>

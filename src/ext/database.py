@@ -1,15 +1,14 @@
 from src.models import User
 from src.models import db
 from flask import Flask
+from src.config import settings
 
 def init_app(app: Flask) -> None:
+    """Inicializa o banco de dados"""
     db.init_app(app)
     with app.app_context():
         db.create_all()
-    
-        user = User(nome='admin', idade=25, ativo=True)
-        item = db.session.query(User).filter_by(nome='admin').first()
+        user = User(nome=settings.USERNAME, senha=settings.PASSWORD)
+        item = db.session.query(User).filter_by(nome='Antonio').first()
         if not item:
-            db.session.add(user)
-            db.session.commit()
-            db.session.close()
+            user.save()

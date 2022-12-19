@@ -3,6 +3,7 @@ from src.models import User
 from flask import Flask
 
 def init_app(app: Flask) -> None:
+    """Inicializa a extensão de autenticação"""
     login_manager = LoginManager()
     login_manager.init_app(app)
 

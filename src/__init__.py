@@ -6,6 +6,7 @@ from src.ext import auth
 from src import views
 
 def create_app() -> Flask:
+    """Cria a instância principal da aplicação"""
     app = Flask(__name__)
 
     auth.init_app(app)

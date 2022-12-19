@@ -1,6 +1,7 @@
 from flask import Flask
+from src.config import settings
 
 def init_app(app: Flask) -> None:
-    DB_NAME = "db.sqlite3"
-    app.config['SECRET_KEY'] = 'derfgtyhjuik'
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    """Inicializa as configurações da aplicação"""
+    app.config['SECRET_KEY'] = settings.FLASK_SECRET_KEY
+    app.config['SQLALCHEMY_DATABASE_URI'] = settings.DATABASE_URI

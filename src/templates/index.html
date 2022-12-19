@@ -1,16 +1,157 @@
 {% extends "layout.html" %}
-{% block title %}user{% endblock %}
+{% block title %}Jobs{% endblock %}
 {% block main %}
 {% include 'modules/header.html' %}
 
-<div>
-    Your todos:
-    <ul> 
-    {% for person in users %}
-    <li>{{person.id}}, {{person.username}}, {{person.email}}</li>
-    {% endfor %}
-    </ul>
-</div>
+<div id="part1">
+    <div class="m-5">
+        <a href="{{ url_for('reset') }}"><button class="btn btn-danger">Reset to default</button></a>
+    </div>
+    <div class="m-5">
+        <h2>> Your jobs</h2>
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr class="text-center">
+                    <th>Minute</th>
+                    <th>Hour</th>
+                    <th>Day of month</th>
+                    <th>Month</th>
+                    <th>DOW</th>
+                    <th>Command</th>
+                    <th> x </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, job in enumerate(cron) %}
+                {% if not str(job).startswith('#') %}
 
-{% include 'modules/footer.html' %}
+                <tr class="text-center">
+                    <td>{{ job.slices[0] }}</td>
+                    <td>{{ job.slices[1] }}</td>
+                    <td>{{ job.slices[2] }}</td>
+                    <td>{{ job.slices[3] }}</td>
+                    <td>{{ str(job.slices[4]).replace(',', ', ') }}</td>
+                    <td>
+                        {% if job.command.startswith('root') %}
+
+                        {{ job.command.split('root')[-1].strip() }}
+
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('del_job', index=index) }}">
+                            <button class="btn btn-danger">x</button>
+                        </a>
+                    </td>
+                </tr>
+
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <fieldset class="m-5">
+        <h2 class="mb-3 mt-4">+     Add new job</h2>
+        <form method="post" action="{{ url_for('new_job') }}">
+            
+            <div class="row">
+                <div class="mb-3">
+                    <h5 class="mt-4 mb-4">Days of week</h5>
+                    
+                    <div class="row">
+                         
+                        <div class="col">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" value="MON" name="dow" id="check-mon"/>
+                            <label class="form-check-label" for="check-mon">Monday</label>
+                        </div>
+                        </div>
+                         
+                        <div class="col">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" value="TUE" name="dow" id="check-tue"/>
+                            <label class="form-check-label" for="check-tue">Tuesday</label>
+                        </div>
+                        </div>
+                         
+                        <div class="col">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" value="WED" name="dow" id="check-wed"/>
+                            <label class="form-check-label" for="check-wed">Wednesday</label>
+                        </div>
+                        </div>
+                         
+                        <div class="col">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" value="THU" name="dow" id="check-thu"/>
+                            <label class="form-check-label" for="check-thu">Thursday</label>
+                        </div>
+                        </div>
+                         
+                        <div class="col">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" value="FRI" name="dow" id="check-fri"/>
+                            <label class="form-check-label" for="check-fri">Friday</label>
+                        </div>
+                        </div>
+                         
+                        <div class="col">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" value="SAT" name="dow" id="check-sat"/>
+                            <label class="form-check-label" for="check-sat">Satdurday</label>
+                        </div>
+                        </div>
+                         
+                        <div class="col">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" value="Sunday" name="dow" id="check-sun"/>
+                            <label class="form-check-label" for="check-sun">Sunday</label>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="mt-4 mb-4">Time</h5>
+                <div class="mb-3 col">
+                    <label class="form-label">Minute</label>
+                    <input class="form-control" type="number" name="minutes"/> 
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Hours</label>
+                    <input class="form-control" type="number" name="hours"/> 
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Days</label>
+                    <input class="form-control" type="number" name="days"/> 
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Months</label>
+                    <input class="form-control" type="number" name="months"/> 
+                </div>
+            </div>
+
+            <h5 class="mt-4 mb-4">Data</h5>
+            <div class="row">
+                <div class="mb-3 col">
+                    <label class="form-label">Command</label>
+                    <input class="form-control" name="command"/> 
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Comment</label>
+                    <input class="form-control" name="comment"/> 
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <hr class="mt-5 mb-5">
+                <input class="btn btn-primary w-100" type="submit" value="Registrar" />
+            </div>
+        </form>
+    </fieldset>
+<div>
+
+<div id="part2">
+    {% include 'modules/footer.html' %}
+</div>
 {% endblock %}
