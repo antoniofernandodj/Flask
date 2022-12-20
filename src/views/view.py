@@ -14,21 +14,43 @@ from flask_login import login_required, logout_user
 
 
 PROJECT_PATH = str(Path(__file__).parent.parent)
-CRON_PATH = os.path.join(PROJECT_PATH, 'tabs', 'crontab')
 DEFAULT_CRON_PATH = os.path.join(PROJECT_PATH, 'tabs', 'defaulttab')
 
-# set this to use the main cron
-# CRON_PATH = '/etc/crontab'
+HOME = os.getenv('HOME')
+CRON_PATH = '/etc/crontab'
 
 
 class Jobs(View):
     decorators = [login_required]
     
     def dispatch_request(self):
-        cron = CronTab(tabfile=CRON_PATH, user=True)
+        user = request.args.get('user')
+        
+        if not user:
+            return render_template(
+                'index.html',
+                cron='', user='', usernotfound='',
+                enumerate=enumerate, str=str
+            )
+        
+        usernotfound = ''
+        try:
+            cron = CronTab(tabfile=CRON_PATH, user=True)
+            
+        except FileNotFoundError:
+            with open(CRON_PATH, 'w') as f: f.write('#\n')
+            cron = CronTab(tabfile=CRON_PATH, user=True)
+            
+        except IsADirectoryError:
+            cron = CronTab(tabfile=CRON_PATH, user=True)
+            usernotfound = user
+            user = ''
+        
         return render_template(
             'index.html',
             cron=cron,
+            user=user,
+            usernotfound=usernotfound,
             enumerate=enumerate, str=str
         )
 
@@ -43,7 +65,7 @@ class RunCron(View):
         for result in tab.run_scheduler():
             print(result)
         return ''
-    
+
 
 class LongRequest(View):
     def dispatch_request(self) -> ft.ResponseReturnValue:
@@ -58,7 +80,9 @@ class NewJob(View):
     def dispatch_request(self) -> ft.ResponseReturnValue:
 
         if request.method == 'POST':
-            
+
+            user = request.form.get('user')
+
             minutes = request.form.get('minutes')
             hours = request.form.get('hours')
             day = request.form.get('days')
@@ -69,39 +93,39 @@ class NewJob(View):
             command = request.form.get('command')
             comment = request.form.get('comment')
             
-            cron = CronTab(tabfile=CRON_PATH, user='root')
+            minutes = minutes if minutes else '*'
+            hours = hours if hours else '*'
+            day = day if day else '*'
+            months = months if months else '*'
+            dow = str(dow) \
+                .replace("[", "") \
+                .replace("]", "") \
+                .replace("'", "") \
+                .replace(" ", "") if dow else '*'
                 
-            job = cron.new(
-                command=f'root\t{command}',
-                comment=f'{comment}',
-                user=True)
+            user = user if user else '*'
+            comment = comment if comment else ''
             
-            if minutes:
-                job.minutes.every(int(minutes))
-            if hours:
-                job.hours.every(int(hours))
-            if day:
-                job.day.every(int(day))
-            if months:
-                job.months.every(int(months))
-            if dow:
-                job.dow.on(*dow)
-                
-            cron.write()
-        return redirect(url_for('jobs'))
+            string = f"{minutes} {hours} {day} {months} {dow} {user}\t{command} # {comment}"
+            
+            with open(CRON_PATH, 'a') as f:
+                f.write(f'{string}\n')
+            
+        return redirect(request.referrer)
 
 
 class DelJob(View):
     method = ['GET']
     decorators = [login_required]
     
-    def dispatch_request(self, index) -> ft.ResponseReturnValue:
-        cron = CronTab(tabfile=CRON_PATH, user=True)
+    def dispatch_request(self, index, user) -> ft.ResponseReturnValue:
+        tabfile = CRON_PATH
+        cron = CronTab(tabfile=tabfile, user=True)
         job = cron[index]
         cron.remove(job)
         job.clear()
         cron.write()
-        return redirect(url_for('jobs'))
+        return redirect(request.referrer)
 
 
 class ResetToDefault(View):
@@ -111,7 +135,7 @@ class ResetToDefault(View):
     def dispatch_request(self) -> ft.ResponseReturnValue:
         with open(DEFAULT_CRON_PATH) as f: content = f.readlines()
         with open(CRON_PATH, 'w') as f: f.write(''.join(content))
-        return redirect(url_for('jobs'))
+        return redirect(request.referrer)
 
 
 class Login(View):

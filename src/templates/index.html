@@ -3,6 +3,11 @@
 {% block main %}
 {% include 'modules/header.html' %}
 
+<form class="my-5 mx-5">
+    <input class="my-5" name="user" value="{{ user or usernotfound }}" />
+    <input type="submit" value="Set user">
+</form>
+{% if user %}
 <div id="part1">
     <div class="m-5">
         <a href="{{ url_for('reset') }}"><button class="btn btn-danger">Reset to default</button></a>
@@ -18,6 +23,7 @@
                     <th>Month</th>
                     <th>DOW</th>
                     <th>Command</th>
+                    <th>Comment</th>
                     <th> x </th>
                 </tr>
             </thead>
@@ -32,14 +38,11 @@
                     <td>{{ job.slices[3] }}</td>
                     <td>{{ str(job.slices[4]).replace(',', ', ') }}</td>
                     <td>
-                        {% if job.command.startswith('root') %}
-
-                        {{ job.command.split('root')[-1].strip() }}
-
-                        {% endif %}
+                        {{ ' '.join(job.command.split('\t')[1:]) }}
                     </td>
+                    <td>{{ job.comment }}</td>
                     <td>
-                        <a href="{{ url_for('del_job', index=index) }}">
+                        <a href="{{ url_for('del_job', index=index, user=user) }}">
                             <button class="btn btn-danger">x</button>
                         </a>
                     </td>
@@ -52,7 +55,7 @@
     </div>
 
     <fieldset class="m-5">
-        <h2 class="mb-3 mt-4">+     Add new job</h2>
+        <h2 class="mb-3 mt-4">+ Add new job</h2>
         <form method="post" action="{{ url_for('new_job') }}">
             
             <div class="row">
@@ -113,6 +116,7 @@
                 </div>
 
                 <h5 class="mt-4 mb-4">Time</h5>
+                
                 <div class="mb-3 col">
                     <label class="form-label">Minute</label>
                     <input class="form-control" type="number" name="minutes"/> 
@@ -133,6 +137,7 @@
 
             <h5 class="mt-4 mb-4">Data</h5>
             <div class="row">
+                <input type="hidden" value="{{user}}" name="user" />
                 <div class="mb-3 col">
                     <label class="form-label">Command</label>
                     <input class="form-control" name="command"/> 
@@ -150,8 +155,15 @@
         </form>
     </fieldset>
 <div>
-
+{% endif %}
 <div id="part2">
     {% include 'modules/footer.html' %}
 </div>
+
+<script>
+    $('#datetimepicker').datetimepicker({
+        format: 'hh:mm:ss a'
+    });
+</script> 
+
 {% endblock %}
